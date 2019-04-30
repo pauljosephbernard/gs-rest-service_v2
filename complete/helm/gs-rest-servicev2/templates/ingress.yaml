@@ -1,0 +1,21 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: {{.Chart.Name }}
+    release: {{.Chart.Name }}
+  name: {{.Chart.Name }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.hostname }}
+      http:
+        paths:
+          - backend:
+              serviceName: gs-rest-service-v2
+              servicePort: 8082
+  tls:
+    - hosts:
+        - {{ .Values.ingress.tls.host }}
+      secretName: {{ .Values.ingress.tls.secretName }}
+{{- end }}

@@ -1,0 +1,17 @@
+# Configuration to get TLS key from Hashicorp vault
+vault.pki:
+  enabled: false
+  role: release-engineering
+  common-name: localhost
+# Configuration to pull config from Hashicorp vault
+spring:
+  application.name: gs-rest-service
+  cloud.vault:
+    enabled: false
+    host: did-vault1.vm.sandbox.identix.com
+    port: 8200
+    scheme: http
+    authentication: TOKEN
+    token: 1f983d9a-a2d9-063e-7f44-baa0d8b1bd54
+    generic:
+      backend: digital-identity

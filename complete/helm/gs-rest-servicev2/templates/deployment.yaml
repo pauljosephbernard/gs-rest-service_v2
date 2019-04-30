@@ -1,0 +1,63 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{.Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.service.externalPortName }}
+              containerPort: {{ .Values.service.externalPort }}
+              protocol: TCP
+            - name: {{ .Values.service.internalPortName }}
+              containerPort: {{ .Values.service.internalPort }}
+              protocol: TCP              
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /actuator/health
+              port:  {{ .Values.service.externalPort }}
+              initialDelaySeconds: 40
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /actuator/health
+              port:  {{ .Values.service.externalPort }}
+              initialDelaySeconds: 40
+          args:
+             - "--o /var/log/releng.out"
+             - "--e /var/log/releng.err"
+
+          resources: 
+{{ toYaml .Values.resources | indent 12 }}
+
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

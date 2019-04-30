@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.idemia.buildeng.test</groupId>
+	<artifactId>gs-rest-service-api-tests</artifactId>
+	<version>5.0.2</version>
+	<name>REST API Test for gs-rest-service</name>
+	<description>Provides REST API Test for gs-rest-service</description>
+	<properties>
+		<jmeter.script.1>gs-rest-service_api_test.jmx</jmeter.script.1>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.lazerycode.jmeter</groupId>
+				<artifactId>jmeter-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>jmeter-tests</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jmeter</goal>
+						</goals>
+						<configuration>
+							<ignoreResultFailures>false</ignoreResultFailures>
+						</configuration>
+					</execution>
+				   <execution>
+                        <id>jmeter-check-results</id>
+                         <goals>
+                           <goal>results</goal>
+                         </goals>
+                    </execution>
+				</executions>
+				<configuration>
+					<testFilesIncluded>
+						<jMeterTestFile>${jmeter.script.1}</jMeterTestFile>
+					</testFilesIncluded>
+					<suppressJMeterOutput>false</suppressJMeterOutput>
+					<overrideRootLogLevel>debug</overrideRootLogLevel>
+					<propertiesJMeter>
+						<log_level.jmeter>DEBUG</log_level.jmeter>
+					</propertiesJMeter>
+					<propertiesUser>
+						<serviceHost>${serviceHost}</serviceHost>
+						<servicePort>${servicePort}</servicePort>
+						<serviceProtocol>${serviceProtocol}</serviceProtocol>
+					</propertiesUser>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
